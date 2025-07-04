@@ -1555,7 +1555,7 @@ def messages():
     return render_template_string(BASE_LAYOUT + USER_MESSAGES_HTML, title='Messages', form=form, messages=user_to_admin_messages, now=datetime.utcnow())
 
 # --- Admin Routes ---
-@app.route('/admin/dashboard')
+@app.route('/admin/dashboard', endpoint='admin_dashboard')
 @admin_required
 def admin_dashboard():
     """Admin dashboard - basic stats."""
@@ -1569,14 +1569,14 @@ def admin_dashboard():
                            total_orders=total_orders,
                            pending_orders=pending_orders, now=datetime.utcnow())
 
-@app.route('/admin/products')
+@app.route('/admin/products', endpoint='admin_products')
 @admin_required
 def admin_products():
     """Admin: View, Add, Edit, Delete Products."""
     products = Product.query.order_by(Product.name).all()
     return render_template_string(BASE_LAYOUT + ADMIN_PRODUCTS_HTML, title='Manage Products', products=products, now=datetime.utcnow())
 
-@app.route('/admin/add_product', methods=['GET', 'POST'])
+@app.route('/admin/add_product', methods=['GET', 'POST'], endpoint='add_product')
 @admin_required
 def add_product():
     """Admin: Add a new product."""
@@ -1605,7 +1605,7 @@ def add_product():
         return redirect(url_for('admin_products'))
     return render_template_string(BASE_LAYOUT + ADD_PRODUCT_HTML, title='Add Product', form=form, now=datetime.utcnow())
 
-@app.route('/admin/edit_product/<int:product_id>', methods=['GET', 'POST'])
+@app.route('/admin/edit_product/<int:product_id>', methods=['GET', 'POST'], endpoint='edit_product')
 @admin_required
 def edit_product(product_id):
     """Admin: Edit an existing product."""
@@ -1639,7 +1639,7 @@ def edit_product(product_id):
         return redirect(url_for('admin_products'))
     return render_template_string(BASE_LAYOUT + ADD_PRODUCT_HTML, title='Edit Product', form=form, product=product, now=datetime.utcnow())
 
-@app.route('/admin/delete_product/<int:product_id>', methods=['POST'])
+@app.route('/admin/delete_product/<int:product_id>', methods=['POST'], endpoint='delete_product')
 @admin_required
 def delete_product(product_id):
     """Admin: Delete a product."""
@@ -1653,14 +1653,14 @@ def delete_product(product_id):
     flash('Product deleted successfully!', 'success')
     return redirect(url_for('admin_products'))
 
-@app.route('/admin/orders')
+@app.route('/admin/orders', endpoint='admin_orders')
 @admin_required
 def admin_orders():
     """Admin: View all orders."""
     orders = Order.query.order_by(Order.order_date.desc()).all()
     return render_template_string(BASE_LAYOUT + ADMIN_ORDERS_HTML, title='Manage Orders', orders=orders, now=datetime.utcnow())
 
-@app.route('/admin/update_order_status/<int:order_id>', methods=['POST'])
+@app.route('/admin/update_order_status/<int:order_id>', methods=['POST'], endpoint='update_order_status')
 @admin_required
 def update_order_status(order_id):
     """Admin: Update order status."""
@@ -1674,7 +1674,7 @@ def update_order_status(order_id):
         flash('Invalid status provided.', 'danger')
     return redirect(url_for('admin_orders'))
 
-@app.route('/admin/users')
+@app.route('/admin/users', endpoint='admin_users')
 @admin_required
 def admin_users():
     """Admin: View registered users."""
@@ -1687,7 +1687,7 @@ def admin_users():
     app.jinja_env.filters['get_user_registration_date'] = get_user_registration_date_filter
     return render_template_string(BASE_LAYOUT + ADMIN_USERS_HTML, title='Manage Users', users=users, now=datetime.utcnow())
 
-@app.route('/admin/messages', methods=['GET', 'POST'])
+@app.route('/admin/messages', methods=['GET', 'POST'], endpoint='admin_messages')
 @admin_required
 def admin_messages():
     """Admin: View and reply to user messages."""
